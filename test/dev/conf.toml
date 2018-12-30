@@ -1,0 +1,10 @@
+
+port = 7667
+secureOnly = false
+
+[session]
+
+persist = true
+backupFile = "./test/dev/session.json"
+backupInterval = 15
+expires = 72

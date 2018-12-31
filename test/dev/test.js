@@ -2,12 +2,12 @@
 
 const fs = require('fs');
 const toml = require('toml');
-const Prism = require('../../lib/main');
+const Prysmo = require('../../lib/main');
 
 (function(){
     try{
         let settings = toml.parse(fs.readFileSync('./test/dev/conf.toml'));
-        let p = new Prism(settings);
+        let p = new Prysmo(settings);
         p.on('log', (level, msg) => console.log(new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''), level, msg) )
 
         p.endpoint(/hello/, (client, data, send) => send('HELLO!!'));

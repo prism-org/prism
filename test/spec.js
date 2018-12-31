@@ -6,22 +6,22 @@ const assert = chai.assert;
 
 const delay = s => new Promise(done => setTimeout(done, s * 1000));
 
-const Prism = require('../lib/main');
+const Prysmo = require('../lib/main');
 const WebSocket = require('ws');
 
-describe('Prism', () => {
+describe('Prysmo', () => {
 
     after(() => wtf.dump());
 
     describe('::constructor', () => {
 
-        it('should create the prism instance', () => {
-            let p = new Prism();
+        it('should create the prysmo instance', () => {
+            let p = new Prysmo();
             assert.equal(typeof p.log, 'object');
         });
 
         it('should read settings object', () => {
-            let p = new Prism({ custom: true });
+            let p = new Prysmo({ custom: true });
             assert(p.settings.custom);
         });
 
@@ -30,7 +30,7 @@ describe('Prism', () => {
     describe('#listen', () => {
 
         it('should listen on default port', done => {
-            let p = new Prism();
+            let p = new Prysmo();
             p.listen();
 
             let c = new WebSocket('ws://localhost:7667');
@@ -45,7 +45,7 @@ describe('Prism', () => {
     describe('#close', () => {
 
         it('should stop all server components', done => {
-            let p = new Prism();
+            let p = new Prysmo();
             p.listen();
             p.close();
 
@@ -62,7 +62,7 @@ describe('Prism', () => {
 
         let p;
         beforeEach(() => {
-            p = new Prism();
+            p = new Prysmo();
             p.listen();
         });
 
@@ -87,7 +87,7 @@ describe('Prism', () => {
         it('should throw errors when debug flag is up', done => {
             p.endpoint('error', () => { throw new Error('test') }, true );
             p.endpoint('proxy', function(){  assert.throws(() => this.trigger('error')); done() });
-            let c = new WebSocket('ws://localhost:7667', ['prism']);
+            let c = new WebSocket('ws://localhost:7667', ['prysmo']);
             c.on('open', () => c.send('{"endpoint":"proxy"}') );
         });
 
@@ -96,7 +96,7 @@ describe('Prism', () => {
     describe('Settings', () => {
 
         it('should listen on custom port [port]', done => {
-            let p = new Prism({ port: 50 });
+            let p = new Prysmo({ port: 50 });
             p.listen();
 
             let c = new WebSocket('ws://localhost:50');
@@ -107,7 +107,7 @@ describe('Prism', () => {
         });
 
         it('should require HTTPS handshake [secureOnly]', done => {
-            let p = new Prism({ secureOnly: true });
+            let p = new Prysmo({ secureOnly: true });
             p.listen();
 
             let c = new WebSocket('ws://localhost:7667');
@@ -122,7 +122,7 @@ describe('Prism', () => {
         it('should ping at custom rate to check connection health [timeout]', function(done){
             this.timeout(10e3);
 
-            let p = new Prism({ timeout: 6e3 });
+            let p = new Prysmo({ timeout: 6e3 });
             p.listen();
 
             let c = new WebSocket('ws://localhost:7667');
@@ -136,7 +136,7 @@ describe('Prism', () => {
         describe('Session Persistence [session]', () => {
 
             it('should save session before closing [session.persist]', done => {
-                let p = new Prism({ session: { persist: true } });
+                let p = new Prysmo({ session: { persist: true } });
                 p.listen();
                 p.session.object.right = true;
                 p.close();
@@ -145,7 +145,7 @@ describe('Prism', () => {
             });
 
             it('should save session when required [session.persist]', done => {
-                let p = new Prism({ session: { persist: true } });
+                let p = new Prysmo({ session: { persist: true } });
                 p.listen();
                 p.session.object.right = true;
                 p.session.save();
@@ -155,7 +155,7 @@ describe('Prism', () => {
             });
 
             it('should not do anything when asked to save without persist [session.persist]', () => {
-                let p = new Prism();
+                let p = new Prysmo();
                 p.listen();
                 p.session.object.right = true;
                 p.session.save();
@@ -164,7 +164,7 @@ describe('Prism', () => {
             });
 
             it('should load session upon opening [session.persist]', done => {
-                let p = new Prism({ session: { persist: true } });
+                let p = new Prysmo({ session: { persist: true } });
                 p.listen();
                 p.session.object.right = true;
                 p.close();
@@ -182,7 +182,7 @@ describe('Prism', () => {
             });
 
             it('should save session on custom file [session.backupFile]', done => {
-                let p = new Prism({ session: {
+                let p = new Prysmo({ session: {
                     persist: true,
                     backupFile: './custom.json'
                 } });
@@ -194,7 +194,7 @@ describe('Prism', () => {
             });
 
             it('should remove expired sessions [session.expires]', done => {
-                let p = new Prism({ session: {
+                let p = new Prysmo({ session: {
                     persist: true,
                     expires: 1
                 } });
@@ -218,7 +218,7 @@ describe('Prism', () => {
         describe('TLS & HTTPS [ssl]', () => {
 
             it('should connect securely through TLS', done => {
-                let p = new Prism({ ssl: {
+                let p = new Prysmo({ ssl: {
                     key: './test/res/localhost.key',
                     cert: './test/res/localhost.cert'
                 } });
@@ -242,9 +242,9 @@ describe('Prism', () => {
 
         let p, c;
         beforeEach(() => {
-            p = new Prism();
+            p = new Prysmo();
             p.listen();
-            c = new WebSocket('ws://localhost:7667', ['other', 'prism']);
+            c = new WebSocket('ws://localhost:7667', ['other', 'prysmo']);
         });
 
         afterEach(() => {
@@ -252,7 +252,7 @@ describe('Prism', () => {
             c.terminate();
         });
 
-        describe('Prism Protocol', () => {
+        describe('Prysmo Protocol', () => {
 
             it('should ping to check connection health', function(done){
                 this.timeout(5000);
@@ -299,9 +299,9 @@ describe('Prism', () => {
                 });
             });
 
-            it('should pick prism protocol', done => {
+            it('should pick prysmo protocol', done => {
                 c.on('open', () => {
-                    assert.equal(c.protocol, 'prism');
+                    assert.equal(c.protocol, 'prysmo');
                     done();
                 });
             });

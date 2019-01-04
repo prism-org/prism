@@ -21,11 +21,11 @@
     },
     "homepage": "https://gitlab.com/prysmo/prysmo#readme",
     "bugs": {
-        "url" : "https://gitlab.com/prysmo/prysmo/issues",
-        "email" : "prysmo@protonmail.com"
+        "url": "https://gitlab.com/prysmo/prysmo/issues",
+        "email": "prysmo@protonmail.com"
     },
     "repository": {
-        "type" : "git",
-        "url" : "https://gitlab.com/prysmo/prysmo.git"
+        "type": "git",
+        "url": "https://gitlab.com/prysmo/prysmo.git"
     }
 }

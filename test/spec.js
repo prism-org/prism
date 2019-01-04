@@ -98,6 +98,19 @@ describe('Prysmo', () => {
             c.on('open', () => c.send('{"endpoint":"proxy"}') );
         });
 
+        it('should send errors when debug flag is up', done => {
+            p.endpoint('error', () => { throw new Error('test') }, true );
+            p.endpoint('proxy', function(){  assert.throws(() => this.trigger('error')) });
+
+            let c = new WebSocket('ws://localhost:7667', ['prysmo']);
+            c.on('open', () => c.send('{"endpoint":"proxy"}') );
+            c.on('message', data => {
+                let d = JSON.parse(data);
+                assert.equal(d.error, 'test');
+                done();
+            });
+        });
+
     });
 
     describe('Settings', () => {

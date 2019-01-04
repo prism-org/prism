@@ -56,6 +56,13 @@ describe('Prysmo', () => {
             });
         });
 
+        it('should throw on closing a closed server', () => {
+            let p = new Prysmo();
+            p.listen();
+            p.close();
+            assert.throws( () => p.close() );
+        });
+
     });
 
     describe('#endpoint', () => {
@@ -380,6 +387,7 @@ describe('Prysmo', () => {
                 c.on('open', () => c.send('{"endpoint":"proxy"}') );
                 c.on('message', e => {
                     let m = JSON.parse(e);
+                    assert.equal(m.endpoint, 'hello');
                     assert.equal(m.data, 'success');
                     done();
                 });

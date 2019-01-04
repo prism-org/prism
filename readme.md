@@ -20,7 +20,7 @@ server.endpoint('hello', (sess, data, send) => send('Hello World!') );
 server.listen();
 ```
 
-- Connect to the websocket at `wss://localhost:7667`
+- Connect to the websocket at `ws://localhost:7667`
 - Send the following message `{"endpoint":"hello"}`
 - You will receive a message containing: `{"endpoint":"hello","data":"Hello World!"}`
 
@@ -33,7 +33,8 @@ server.listen();
 - **Settings:** all features farly configurable to fit in your use case.
 
 ## Client Implementations
-- None yet.
+- [Node Prysmo](https://gitlab.com/prysmo/node-prysmo)
+- [JS Prysmo](https://gitlab.com/prysmo/js-prysmo)
 
 ## Archietcture
 

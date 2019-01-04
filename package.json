@@ -1,7 +1,7 @@
 {
     "name": "prysmo",
     "description": "A service gateway framework providing lightweight bidirectional communication between your web clients and application services.",
-    "version": "0.0.1-a",
+    "version": "0.0.2",
     "main": "./lib/main.js",
     "license": "MIT",
     "scripts": {

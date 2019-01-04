@@ -113,6 +113,40 @@ describe('Prysmo', () => {
 
     });
 
+    describe('#entity', () => {
+
+        let p;
+        beforeEach(() => {
+            p = new Prysmo();
+            p.listen();
+        });
+
+        afterEach(() => p.close());
+
+        it('should fail when receiving wrong arguments', () => {
+            assert.throws( () => p.entity() );
+        });
+
+        it('should register endpoints', () => {
+            p.entity({
+                test1: (s, d, send) => send('TEST 1'),
+                test2: (s, d, send) => send('TEST 2')
+            });
+            assert.equal(p.endpoints['test1'].listenerCount('trigger'), 1);
+            assert.equal(p.endpoints['test2'].listenerCount('trigger'), 1);
+        });
+
+        it('should register endpoints with prefix', () => {
+            p.entity({
+                test1: (s, d, send) => send('TEST 1'),
+                test2: (s, d, send) => send('TEST 2')
+            }, 'Prefix.');
+            assert.equal(p.endpoints['Prefix.test1'].listenerCount('trigger'), 1);
+            assert.equal(p.endpoints['Prefix.test2'].listenerCount('trigger'), 1);
+        });
+
+    });
+
     describe('Settings', () => {
 
         it('should listen on custom port [port]', done => {

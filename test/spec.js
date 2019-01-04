@@ -56,6 +56,13 @@ describe('Prysmo', () => {
             });
         });
 
+        it('should throw on closing a closed server', () => {
+            let p = new Prysmo();
+            p.listen();
+            p.close();
+            assert.throws( () => p.close() );
+        });
+
     });
 
     describe('#endpoint', () => {
@@ -89,6 +96,53 @@ describe('Prysmo', () => {
             p.endpoint('proxy', function(){  assert.throws(() => this.trigger('error')); done() });
             let c = new WebSocket('ws://localhost:7667', ['prysmo']);
             c.on('open', () => c.send('{"endpoint":"proxy"}') );
+        });
+
+        it('should send errors when debug flag is up', done => {
+            p.endpoint('error', () => { throw new Error('test') }, true );
+            p.endpoint('proxy', function(){  assert.throws(() => this.trigger('error')) });
+
+            let c = new WebSocket('ws://localhost:7667', ['prysmo']);
+            c.on('open', () => c.send('{"endpoint":"proxy"}') );
+            c.on('message', data => {
+                let d = JSON.parse(data);
+                assert.equal(d.error, 'test');
+                done();
+            });
+        });
+
+    });
+
+    describe('#entity', () => {
+
+        let p;
+        beforeEach(() => {
+            p = new Prysmo();
+            p.listen();
+        });
+
+        afterEach(() => p.close());
+
+        it('should fail when receiving wrong arguments', () => {
+            assert.throws( () => p.entity() );
+        });
+
+        it('should register endpoints', () => {
+            p.entity({
+                test1: (s, d, send) => send('TEST 1'),
+                test2: (s, d, send) => send('TEST 2')
+            });
+            assert.equal(p.endpoints['test1'].listenerCount('trigger'), 1);
+            assert.equal(p.endpoints['test2'].listenerCount('trigger'), 1);
+        });
+
+        it('should register endpoints with prefix', () => {
+            p.entity({
+                test1: (s, d, send) => send('TEST 1'),
+                test2: (s, d, send) => send('TEST 2')
+            }, 'Prefix.');
+            assert.equal(p.endpoints['Prefix.test1'].listenerCount('trigger'), 1);
+            assert.equal(p.endpoints['Prefix.test2'].listenerCount('trigger'), 1);
         });
 
     });
@@ -380,6 +434,7 @@ describe('Prysmo', () => {
                 c.on('open', () => c.send('{"endpoint":"proxy"}') );
                 c.on('message', e => {
                     let m = JSON.parse(e);
+                    assert.equal(m.endpoint, 'hello');
                     assert.equal(m.data, 'success');
                     done();
                 });
